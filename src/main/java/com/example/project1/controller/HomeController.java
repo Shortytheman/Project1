@@ -22,7 +22,11 @@ public class HomeController {
 
   @GetMapping("/basket")
   public String basket(Model model){
-    model.addAttribute("items", webshopRepository.showAll());
+    model.addAttribute("items", webshopRepository.showItems());
+    model.addAttribute("total",webshopRepository.total());
     return "basket";
   }
+
+
+
 }

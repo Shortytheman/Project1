@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Webshop basket</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <h1>Basket</h1>
 </head>
 <body>
-
+<table>
+<thead>
+<tr>
+    <th>
+        ID
+    </th>
+    <th>
+        Name
+    </th>
+    <th>
+        Price
+    </th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="item : ${items}">
+    <td class="gg" th:text="${item.id}">
+    </td>
+    <td class="gg" th:text="${item.name}">
+    </td>
+    <td class="gg" th:text="${item.price}">
+    </td>
+</tr>
+</tbody>
+</table>
+<span>Total: </span>
+<span th:text="${total}"> </span>
 </body>
 </html>
