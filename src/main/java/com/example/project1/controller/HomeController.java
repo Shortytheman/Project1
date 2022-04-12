@@ -1,10 +1,13 @@
 package com.example.project1.controller;
 
 
+import com.example.project1.model.Item;
 import com.example.project1.repository.WebshopRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class HomeController {
@@ -27,6 +30,22 @@ public class HomeController {
     return "basket";
   }
 
+  //@PostMapping("/basket")
+  //public String basket1(@PathVariable("name") String name, Model model){
+  //Metoder som skal gøre noget skal ind her
+  // return "redirect:/";
+  //}
 
+  @GetMapping("/addAnother/{name}")
+  public String addAnother(@PathVariable("name") String name){
+    webshopRepository.addAnother(name);
+    return "redirect:/basket";
+  }
+
+  @GetMapping("/delete/{name}")
+  public String delete(@PathVariable("name") String name){
+    webshopRepository.deleteItem(name);
+    return "redirect:/basket";
+  }
 
 }

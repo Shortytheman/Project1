@@ -2,7 +2,6 @@ package com.example.project1.model;
 
 public class Item {
 
-  public int id;
   public String name;
   public double price;
 
@@ -10,8 +9,7 @@ public class Item {
 
   }
 
-  public Item(int id, String name, double price){
-    this.id = id;
+  public Item(String name, double price){
     this.name = name;
     this.price = price;
   }
