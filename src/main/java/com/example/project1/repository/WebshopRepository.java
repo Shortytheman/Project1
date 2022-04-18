@@ -17,6 +17,9 @@ public class WebshopRepository {
   //Basket methods -- Vi skal  nok også have en basket model som kræver dependency injection i form af en liste af Items.
   //<editor-fold desc="Basket methods">
   private ArrayList<Item> finishedOrder = new ArrayList<>();
+
+  //Smider alle items i en liste fra databasen, derefter sletter den gentagelser og tæller gentagelserne før de slettes
+  // - så vi kan vise de enkelte varer én gang og hvor mange gentagelser der er.
   public LinkedHashMap<Item, Integer> showItems() {
     finishedOrder.clear();
     LinkedHashMap<Item, Integer> counting = new LinkedHashMap<>();
@@ -51,22 +54,7 @@ public class WebshopRepository {
     return counting;
   }
 
-
-  public void addItem(Item item){
-  try {
-    String query = "INSERT INTO heroku_2ba92db6c587479.item(item_name, item_price) values (?,?)";
-    PreparedStatement prepareStatement = ConnectionManager.connectToSql().prepareStatement(query);
-    prepareStatement.setString(1,item.name);
-    prepareStatement.setDouble(2,item.price);
-    prepareStatement.executeUpdate();
-  } catch (SQLException sqlException){
-    System.out.println("Error in creation of item");
-    sqlException.printStackTrace();
-  }
-    finishedOrder.add(new Item(item.name, item.price));
-  }
-
-
+  //Sletter en vare fra databasen ud fra varens navn - hvis der er gentagende navne slettes der stadig kun én vare.
   public void deleteItem(String name){
     // Deletes a single instance of an item
     try {
@@ -81,6 +69,8 @@ public class WebshopRepository {
     }
   }
 
+  //Tilføjer en ekstra allerede eksisterende vare i kurven ud fra dens navn. - ignorerer hvis der ikke er et varenavn og
+  //pris, da dette forvoldede problemer ifm. hentning af data fra DB.
   public void addAnother(String name) {
     double price = 0;
     String thisName = "";
@@ -98,12 +88,13 @@ public class WebshopRepository {
         prepareStatement.setDouble(2, price);
         prepareStatement.executeUpdate();
       } catch (SQLException sqlException) {
-        System.out.println("Error in deletion of item");
+        System.out.println("Error in adding another one of existing item");
         sqlException.printStackTrace();
       }
     }
   }
 
+  //Viser prisen på alle varer i kurven. Den ganger antallet af  med varerens pris.
   public int total(){
     int total = 0;
       for (Map.Entry<Item, Integer> entry : showItems().entrySet()){
@@ -112,6 +103,21 @@ public class WebshopRepository {
     return total;
   }
   //</editor-fold>
+
+  //Endnu ikke bygget færdig, jeg tænker at vi skal bruge denne på forsiden hvor man kan vælge varer fra et udvalg.
+  public void addItem(Item item){
+    try {
+      String query = "INSERT INTO heroku_2ba92db6c587479.item(item_name, item_price) values (?,?)";
+      PreparedStatement prepareStatement = ConnectionManager.connectToSql().prepareStatement(query);
+      prepareStatement.setString(1,item.name);
+      prepareStatement.setDouble(2,item.price);
+      prepareStatement.executeUpdate();
+    } catch (SQLException sqlException){
+      System.out.println("Error in creation of item");
+      sqlException.printStackTrace();
+    }
+    finishedOrder.add(new Item(item.name, item.price));
+  }
 
 
 
