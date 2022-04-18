@@ -7,17 +7,17 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Repository
 public class WebshopRepository {
 
+  //<editor-fold desc="Basket methods">
   private ArrayList<Item> finishedOrder = new ArrayList<>();
-
-
-  public HashMap<Item, Integer> showItems() {
+  public LinkedHashMap<Item, Integer> showItems() {
     finishedOrder.clear();
-    HashMap<Item, Integer> counting = new HashMap<>();
+    LinkedHashMap<Item, Integer> counting = new LinkedHashMap<>();
     int counter;
 
     try {
@@ -40,13 +40,12 @@ public class WebshopRepository {
           counter++;
           finishedOrder.remove(j);
           j = j - 1;
-          //In some way this loop has to make sure that when one object gets put into the hashmap (Line 45),
-          // it removes the rest of the same instances of that item. BUT HOW?!? Maybe i fixed with the j=j-1???
+          //In some way this loop has to make sure that when one object gets put into the hashmap (Line 48),
+          // it removes the rest of the same instances of that item. BUT HOW?!? Maybe i fixed with the j=j-1??? looks like it <3
         }
       }
       counting.put(finishedOrder.get(i),counter);
     }
-
     return counting;
   }
 
@@ -58,11 +57,11 @@ public class WebshopRepository {
     prepareStatement.setString(1,item.name);
     prepareStatement.setDouble(2,item.price);
     prepareStatement.executeUpdate();
-
   } catch (SQLException sqlException){
     System.out.println("Error in creation of item");
     sqlException.printStackTrace();
   }
+    finishedOrder.add(new Item(item.name, item.price));
   }
 
 
@@ -80,11 +79,6 @@ public class WebshopRepository {
     }
   }
 
-  //public int amount(String name){
-    //int amountCounter = 0;
-    //Skal kunne finde hvor mange der er af hvert item efter item_name og returnere antallet.
-    //}
-
   public void addAnother(String name) {
     double price = 0;
     String thisName = "";
@@ -93,15 +87,30 @@ public class WebshopRepository {
         price = finishedOrder.get(i).price;
         thisName = finishedOrder.get(i).name;
       }
-      finishedOrder.add(new Item(name, price));
+    }
+    if (price != 0 && !thisName.equalsIgnoreCase("")) {
+      try {
+        String query = "INSERT INTO heroku_2ba92db6c587479.item(item_name, item_price) VALUES (?,?)";
+        PreparedStatement prepareStatement = ConnectionManager.connectToSql().prepareStatement(query);
+        prepareStatement.setString(1, thisName);
+        prepareStatement.setDouble(2, price);
+        prepareStatement.executeUpdate();
+      } catch (SQLException sqlException) {
+        System.out.println("Error in deletion of item");
+        sqlException.printStackTrace();
+      }
     }
   }
 
   public int total(){
     int total = 0;
-    for (int i = 0; i < finishedOrder.size();i++){
-      total += finishedOrder.get(i).price;
+      for (Map.Entry<Item, Integer> entry : showItems().entrySet()){
+      total += (entry.getValue() * entry.getKey().price);
     }
     return total;
   }
+  //</editor-fold>
+
+
+
 }
