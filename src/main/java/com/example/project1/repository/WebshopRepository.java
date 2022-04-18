@@ -13,6 +13,8 @@ import java.util.Map;
 @Repository
 public class WebshopRepository {
 
+
+  //Basket methods -- Vi skal nok også have en basket model som kræver dependency injection i form af en liste af Items.
   //<editor-fold desc="Basket methods">
   private ArrayList<Item> finishedOrder = new ArrayList<>();
   public LinkedHashMap<Item, Integer> showItems() {
