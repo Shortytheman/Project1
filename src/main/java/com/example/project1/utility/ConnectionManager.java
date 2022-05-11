@@ -1,7 +1,5 @@
 package com.example.project1.utility;
 
-import org.springframework.core.env.Environment;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 

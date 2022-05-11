@@ -24,7 +24,6 @@ public class WebshopRepository {
     finishedOrder.clear();
     LinkedHashMap<Item, Integer> counting = new LinkedHashMap<>();
     int counter;
-
     try {
       String query = "select * from heroku_2ba92db6c587479.item";
       Statement statement = ConnectionManager.connectToSql().createStatement();
